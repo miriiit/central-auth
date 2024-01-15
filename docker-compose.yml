@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  mongodbca:
+    image: mongo
+    container_name: mongodbca
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: caauth
+    volumes:
+    - ./docker_data/mongodb_ca/data:/data/db
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express-ca
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodbca
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodbca
+      - ME_CONFIG_MONGODB_AUTH_DATABASE=caauth
+
+  central-auth:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: central-auth
+    ports:
+      - "8080:8080"
+      - "5006:5005"
+    depends_on:
+      - mongodbca
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongodbca:27017/caauth
+    volumes:
+      - ./docker_data/app:/app
+
+volumes:
+  src:
