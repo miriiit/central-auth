@@ -4,24 +4,41 @@ services:
   mongodbca:
     image: mongo
     container_name: mongodbca
+    restart: always
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_DATABASE: caauth
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
     volumes:
-    - ./docker_data/mongodb_ca/data:/data/db
+      - ./docker_build/mongodb:/scripts
+      - ./docker_data/mongodb/data:/data/db
+      - ./src/main/scripts/db/mongodb/:/init/db
+    networks:
+      - ca-auth-network
+#    command: bash -c "apt-get update && apt-get install -y mongo-tools && rm -rf /var/lib/apt/lists/*"
+#    entrypoint: [ "/scripts/setup.sh" ]
 
-#  mongo-express:
-#    image: mongo-express
-#    container_name: mongo-express-ca
-#    ports:
-#      - "8081:8081"
-#    depends_on:
-#      - mongodbca
-#    environment:
-#      - ME_CONFIG_MONGODB_SERVER=mongodbca
-#      - ME_CONFIG_MONGODB_AUTH_DATABASE=caauth
+#Mongo Express
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express-ca
+    restart: always
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodbca
+    volumes:
+      - ./docker_build/mongo_express:/scripts
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodbca
+      - ME_CONFIG_MONGODB_AUTH_DATABASE=${MONGO_INITDB_DATABASE}
+      - ME_CONFIG_MONGODB_PORT=27017
+    networks:
+      - ca-auth-network
+    entrypoint: ["/scripts/docker-entrypoint.sh"]
+#  chmod +x docker-entrypoint.sh   #alwasy run when new setup
 
+# api Service
   central-auth:
     build:
       context: .
@@ -36,6 +53,12 @@ services:
       SPRING_DATA_MONGODB_URI: mongodb://mongodbca:27017/caauth
     volumes:
       - ./docker_data/app:/app
+    networks:
+      - ca-auth-network
 
 volumes:
   src:
+
+networks:
+  ca-auth-network:
+    driver: bridge

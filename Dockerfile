@@ -14,7 +14,7 @@ RUN mvn package -DskipTests
 FROM openjdk:17-oracle
 WORKDIR /app
 # Copy the JAR file from the builder stage
-COPY --from=builder /app/target/central_auth.jar /ca/app.jar
+COPY --from=builder /app/target/central-auth-0.0.1-SNAPSHOT.jar /ca/app.jar
 # Expose the port your application runs on (e.g., 8080)
 EXPOSE 8080
 # Start the Spring Boot application

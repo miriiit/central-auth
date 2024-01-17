@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.security.Permission;
 import java.util.List;
@@ -21,10 +19,9 @@ public class CARole {
     private String id;
     private String name;
 
-    @DocumentReference(lazy=true)
+    @DBRef(lazy=true)
     private User user;
 
-    @ReadOnlyProperty
-    @DocumentReference(lookup="{'caRole':?#{#self._id} }")
+    @DBRef
     private List<CAPermission> caPermissions;
 }

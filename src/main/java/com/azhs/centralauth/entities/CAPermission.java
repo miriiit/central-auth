@@ -14,9 +14,5 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 public class CAPermission {
     @Id
     private String id;
-
     private String name;
-
-    @DocumentReference(lazy=true)
-    private CARole caRole;
 }
