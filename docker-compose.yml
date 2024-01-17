@@ -11,16 +11,16 @@ services:
     volumes:
     - ./docker_data/mongodb_ca/data:/data/db
 
-  mongo-express:
-    image: mongo-express
-    container_name: mongo-express-ca
-    ports:
-      - "8081:8081"
-    depends_on:
-      - mongodbca
-    environment:
-      - ME_CONFIG_MONGODB_SERVER=mongodbca
-      - ME_CONFIG_MONGODB_AUTH_DATABASE=caauth
+#  mongo-express:
+#    image: mongo-express
+#    container_name: mongo-express-ca
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      - mongodbca
+#    environment:
+#      - ME_CONFIG_MONGODB_SERVER=mongodbca
+#      - ME_CONFIG_MONGODB_AUTH_DATABASE=caauth
 
   central-auth:
     build:
