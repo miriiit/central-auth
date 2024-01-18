@@ -11,131 +11,100 @@ db.getCollection("roles").drop();
 db.getCollection("users").drop();
 // db.getCollection("users.next_id").drop();
 
+var permission1Id = ObjectId();
+var permission2Id = ObjectId();
+var permission3Id = ObjectId();
 
-db.createCollection("users");
-// db.createCollection("users.next_id");
-// db.users.next_id.insertOne({
-//         "_id":"users",
-//         "next_id": NumberLong(1)
-//     }
-// );
+var role1Id = ObjectId();
+var role2Id = ObjectId();
+var role3Id = ObjectId();
 
-// db.users.createIndex({"email":1}, {"unique": true});
-db.users.insertOne(
-    {
-        // "_id" : NumberLong(db.users.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "firstName" : "Azhar",
-        "lastName" : "Hussnain",
-        "email" : "miriiit60@gmail.com",
-        "roles" : null
-    });
-// db.users.next_id.updateOne({},{$inc:{next_id: NumberLong(1)}});
+var user1Id = ObjectId();
+var user2Id = ObjectId();
+var user3Id = ObjectId();
 
-db.users.insertOne(
-    {
-        // "_id" : NumberLong(db.users.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "firstName" : "Abdul Haq",
-        "lastName" : "Azhar",
-        "email" : "miriiit20@gmail.com",
-        "roles" : null
-    });
-// db.users.next_id.updateOne({},{$inc:{next_id: NumberLong(1)}});
+var permission1 = { _id: permission1Id, name: "VIEW" };
+var permission2 = { _id: permission2Id, name: "UPDATE" };
+var permission3 = { _id: permission3Id, name: "REMOVE" };
 
-
-db.users.insertOne(
-    {
-        // "_id" : NumberLong(db.users.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "firstName" : "Muhammad Safiullah",
-        "lastName" : "Azhar",
-        "email" : "miriiit30@gmail.com",
-        "roles": null
-    });
-// db.users.next_id.updateOne({},{$inc:{next_id: NumberLong(1)}});
-
+var user1= {};
+var user2 = {};
+var user3={};
 
 db.createCollection("permissions");
-// db.createCollection("permissions.next_id");
-// db.permissions.next_id.insertOne({
-//         "_id":"permissions",
-//         "next_id": NumberLong(1)
-//     }
-// );
+db.permissions.insertMany([permission1, permission2, permission3]);
 
-db.permissions.insertOne(
-    {
-        // "_id" : NumberLong(db.permissions.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "name" : "VIEW"
-    });
-// db.permissions.next_id.updateOne({},{$inc:{next_id: NumberLong(1)}});
-db.permissions.insertOne(
-    {
-        // "_id" : NumberLong(db.permissions.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "name" : "UPDATE"
-    });
 
-db.permissions.insertOne(
-    {
-        // "_id" : NumberLong(db.permissions.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "name" : "REMOVE"
-    });
+user1 = {
+    _id: user1Id,
+    firstName: "Azhar",
+    lastName: "Hussnain",
+    email: "miriiit60@gmail.com",
+    caRole: null
+};
 
+user2 = {
+    _id: user2Id,
+    firstName: "Momin",
+    lastName: "Azhar",
+    email: "miriiit80@gmail.com",
+    caRole: null
+};
+
+user3 = {
+    _id: user3Id,
+    firstName: "M Abdul",
+    lastName: "Haq",
+    email: "miriiit90@gmail.com",
+    caRole: null
+};
+db.createCollection("users");
+db.users.insertMany([user1, user2, user3]);
+
+
+var role1 = {
+    _id: role1Id,
+    name: "USER",
+    caPermissions: [permission1]
+};
+var role2 = {
+    _id:  role2Id,
+    name: "ADMIN",
+    caPermissions: [permission1, permission2]
+};
+var role3 = {
+    _id:  role3Id,
+    name: "SUPER_ADMIN",
+    caPermissions: [permission1, permission2, permission3]
+};
 
 db.createCollection("roles");
-// db.createCollection("roles.next_id");
-// db.roles.next_id.insertOne({
-//         "_id":"roles",
-//         "next_id": NumberLong(1)
-//     }
-// );
-db.roles.insertOne(
-    {
-        // "_id" : NumberLong(db.roles.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "name" : "USER",
-        "user" :  db.users.findOne({"email" : "miriiit60@gmail.com"}),
-        "permissions": db.permissions.find({"name":"VIEW"}).toArray()
-    });
-// db.roles.next_id.updateOne({},{$inc:{next_id: NumberLong(1)}});
-db.roles.insertOne(
-    {
-        // "_id" : NumberLong(db.roles.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "name" : "ADMIN",
-        "user" : db.users.findOne({"email" : "miriiit20@gmail.com"}),
-        "permissions": db.permissions.find({"name": { $in: ["VIEW", "UPDATE"]}}).toArray()
-    });
-// db.roles.next_id.updateOne({},{$inc:{next_id: NumberLong(1)}});
+db.roles.insertMany([role1, role2, role3]);
 
-db.roles.insertOne(
-    {
-        // "_id" : NumberLong(db.roles.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "name" : "SUPER_ADMIN",
-        "user" : db.users.findOne({"email" : "miriiit30@gmail.com"}),
-        "permissions": db.permissions.find({"name": { $in: ["VIEW", "UPDATE", "REMOVE"] }}).toArray()
-    });
-// db.roles.next_id.updateOne({},{$inc:{next_id: NumberLong(1)}});
 
-db.users.updateOne(
-    { "email": "miriiit60@gmail.com" }, // Filter criteria
+var updateUser1 = db.users.updateOne(
+    { "_id": user1Id }, // Filter criteria
     {
         $set: {
-            "roles": db.roles.find({"name":"USER" }).toArray()
+            "caRole": role1
             // other fields to update
         }
     }
 )
-db.users.updateOne(
-    { "email": "miriiit30@gmail.com" }, // Filter criteria
+var updateUser2 = db.users.updateOne(
+    { "_id": user2Id }, // Filter criteria
     {
         $set: {
-            "roles": db.roles.find({"name":"SUPER_ADMIN" }).toArray()
+            "caRole": role2
             // other fields to update
         }
     }
 )
-db.users.updateOne(
-    { "email": "miriiit20@gmail.com" }, // Filter criteria
+var updateUser3 = db.users.updateOne(
+    { "_id": user3Id }, // Filter criteria
     {
         $set: {
-            "roles": db.roles.find({"name":"ADMIN"}).toArray()
+            "caRole": role3
             // other fields to update
         }
     }

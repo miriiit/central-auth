@@ -1,6 +1,7 @@
 package com.azhs.centralauth.entities;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Document(collection = "users")
+@Builder
 public class User {
     @Id
     private String id;
@@ -22,6 +24,6 @@ public class User {
     @Indexed(unique = true)
     private String email;
 
-    @DBRef //
-    private List<CaRole> caRole;
+    @DBRef(lazy = true) //
+    private CaRole caRole;
 }

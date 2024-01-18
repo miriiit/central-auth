@@ -12,7 +12,7 @@ import java.util.List;
 public class UserDto {
     private String name;
     private String email;
-    private List<CaRole> caRole;
+    private CaRole caRole;
 
     public static UserDto mapToDto(User user) {
         UserDto userDto = UserDto.builder()

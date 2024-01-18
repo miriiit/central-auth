@@ -3,8 +3,10 @@ package com.azhs.centralauth.controller;
 import com.azhs.centralauth.dto.CreateUserRequest;
 import com.azhs.centralauth.dto.UserDto;
 import com.azhs.centralauth.entities.CaPermission;
+import com.azhs.centralauth.entities.CaRole;
 import com.azhs.centralauth.entities.User;
 import com.azhs.centralauth.enums.ECaPermission;
+import com.azhs.centralauth.enums.ECaRole;
 import com.azhs.centralauth.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -41,9 +44,8 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody CreateUserRequest user) {
-
         User createdUser = userService.createUser(user);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+        return createdUser != null ? new ResponseEntity<>(createdUser, HttpStatus.CREATED) :  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/users/{id}")
@@ -64,9 +66,16 @@ public class UserController {
 
 
     @GetMapping("/permissions/{eCaPermission}")
-    public ResponseEntity<CaPermission> getCaPermissionByName(@PathVariable ECaPermission eCaPermission) {
-        Optional<CaPermission> permissions = userService.getCaPermission(Optional.of(eCaPermission).orElse(ECaPermission.VIEW).name());
-        return permissions.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<List<CaPermission>>  getCaPermissionByName(@PathVariable List<ECaPermission> eCaPermission) {
+        List<String> typeList = eCaPermission != null ? eCaPermission.stream().map(value -> value.name()).collect(Collectors.toList()) : List.of(ECaPermission.VIEW.name());
+        List<CaPermission> permissions = userService.getCaPermission(typeList).get();
+        return permissions.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND) :  ResponseEntity.ok(permissions);
+    }
+
+    @GetMapping("/roles/{eCaRole}")
+    public ResponseEntity<CaRole>  getCaRoleByName(@PathVariable ECaRole eCaRole) {
+        String type = (Optional.of(eCaRole).orElse(ECaRole.USER)).name();
+        Optional<CaRole> role = userService.getCaRole(type);
+        return role.map(value-> new ResponseEntity<CaRole>(value, HttpStatus.OK)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

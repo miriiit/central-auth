@@ -18,9 +18,6 @@ public class CaRole {
     private String id;
     private String name;
 
-    @DBRef(lazy=true)
-    private User user;
-
     @DBRef
     private List<CaPermission> caPermissions;
 }
