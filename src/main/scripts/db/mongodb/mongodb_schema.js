@@ -64,19 +64,19 @@ db.createCollection("permissions");
 db.permissions.insertOne(
     {
         // "_id" : NumberLong(db.permissions.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "name" : "read"
+        "name" : "VIEW"
     });
 // db.permissions.next_id.updateOne({},{$inc:{next_id: NumberLong(1)}});
 db.permissions.insertOne(
     {
         // "_id" : NumberLong(db.permissions.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "name" : "update"
+        "name" : "UPDATE"
     });
 
 db.permissions.insertOne(
     {
         // "_id" : NumberLong(db.permissions.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "name" : "remove"
+        "name" : "REMOVE"
     });
 
 
@@ -90,26 +90,26 @@ db.createCollection("roles");
 db.roles.insertOne(
     {
         // "_id" : NumberLong(db.roles.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "name" : "user",
+        "name" : "USER",
         "user" :  db.users.findOne({"email" : "miriiit60@gmail.com"}),
-        "permissions": db.permissions.find({"name":"read"}).toArray()
+        "permissions": db.permissions.find({"name":"VIEW"}).toArray()
     });
 // db.roles.next_id.updateOne({},{$inc:{next_id: NumberLong(1)}});
 db.roles.insertOne(
     {
         // "_id" : NumberLong(db.roles.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "name" : "admin",
+        "name" : "ADMIN",
         "user" : db.users.findOne({"email" : "miriiit20@gmail.com"}),
-        "permissions": db.permissions.find({"name": { $in: ["read", "update"]}}).toArray()
+        "permissions": db.permissions.find({"name": { $in: ["VIEW", "UPDATE"]}}).toArray()
     });
 // db.roles.next_id.updateOne({},{$inc:{next_id: NumberLong(1)}});
 
 db.roles.insertOne(
     {
         // "_id" : NumberLong(db.roles.next_id.findOne({}, { next_id: 1, _id: 0 }).next_id),
-        "name" : "super_admin",
+        "name" : "SUPER_ADMIN",
         "user" : db.users.findOne({"email" : "miriiit30@gmail.com"}),
-        "permissions": db.permissions.find({"name": { $in: ["read", "update", "remove"] }}).toArray()
+        "permissions": db.permissions.find({"name": { $in: ["VIEW", "UPDATE", "REMOVE"] }}).toArray()
     });
 // db.roles.next_id.updateOne({},{$inc:{next_id: NumberLong(1)}});
 
@@ -117,7 +117,7 @@ db.users.updateOne(
     { "email": "miriiit60@gmail.com" }, // Filter criteria
     {
         $set: {
-            "roles": db.roles.find({"name":"user" }).toArray()
+            "roles": db.roles.find({"name":"USER" }).toArray()
             // other fields to update
         }
     }
@@ -126,7 +126,7 @@ db.users.updateOne(
     { "email": "miriiit30@gmail.com" }, // Filter criteria
     {
         $set: {
-            "roles": db.roles.find({"name":"super_admin" }).toArray()
+            "roles": db.roles.find({"name":"SUPER_ADMIN" }).toArray()
             // other fields to update
         }
     }
@@ -135,7 +135,7 @@ db.users.updateOne(
     { "email": "miriiit20@gmail.com" }, // Filter criteria
     {
         $set: {
-            "roles": db.roles.find({"name":"admin"}).toArray()
+            "roles": db.roles.find({"name":"ADMIN"}).toArray()
             // other fields to update
         }
     }

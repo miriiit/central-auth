@@ -12,6 +12,9 @@ RUN mvn package -DskipTests
 
 # Use a lightweight base image for the final image
 FROM openjdk:17-oracle
+# Set Java options
+ENV _JAVA_OPTIONS="-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+
 WORKDIR /app
 # Copy the JAR file from the builder stage
 COPY --from=builder /app/target/central-auth-0.0.1-SNAPSHOT.jar /ca/app.jar

@@ -2,6 +2,7 @@ version: '3'
 
 services:
   mongodbca:
+    platform: linux/x86_64
     image: mongo
     container_name: mongodbca
     restart: always
@@ -40,19 +41,21 @@ services:
 
 # api Service
   central-auth:
+    platform: linux/x86_64
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: central-auth
+    container_name: central_auth
     ports:
-      - "8080:8080"
-      - "5006:5005"
+     - "8888:8080" # default port mapped to my local port 8888
+     - "5006:5005" # debug port mapped to my local port 5006
     depends_on:
       - mongodbca
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongodbca:27017/caauth
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodbca:27017/caauth
     volumes:
-      - ./docker_data/app:/app
+      - ./.mvn/:/app/.mvn
+      - ./docker_data/mvn/:/root/.mvn
     networks:
       - ca-auth-network
 

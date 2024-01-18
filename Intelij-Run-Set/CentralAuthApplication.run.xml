@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="CentralAuthApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <module name="central-auth" />
+    <target name="central-auth" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.azhs.centralauth.CentralAuthApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+      <option name="RunConfigurationTask" enabled="false" run_configuration_name="ca-auth-db" run_configuration_type="docker-deploy" />
+    </method>
+  </configuration>
+</component>

@@ -23,5 +23,5 @@ public class User {
     private String email;
 
     @DBRef //
-    private List<CARole> caRole;
+    private List<CaRole> caRole;
 }
